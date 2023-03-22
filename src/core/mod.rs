@@ -1,1 +1,2 @@
-mod vector2;
+pub mod text;
+pub mod vector2;
