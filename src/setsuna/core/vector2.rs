@@ -42,25 +42,3 @@ impl<T: Sub<Output = T> + Copy> Sub for Vector2<T> {
         }
     }
 }
-
-impl<T: Mul<Output = T> + Copy> Mul<T> for Vector2<T> {
-    type Output = Vector2<T>;
-
-    fn mul(self, scalar: T) -> Vector2<T> {
-        Vector2 {
-            x: self.x * scalar,
-            y: self.y * scalar,
-        }
-    }
-}
-
-impl<T: Div<Output = T> + Copy> Div<T> for Vector2<T> {
-    type Output = Vector2<T>;
-
-    fn div(self, scalar: T) -> Vector2<T> {
-        Vector2 {
-            x: self.x / scalar,
-            y: self.y / scalar,
-        }
-    }
-}
