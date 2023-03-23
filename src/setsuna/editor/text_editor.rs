@@ -2,12 +2,13 @@ use crate::setsuna::{
     core::vector2::Vector2,
     ui::{
         bar::Bar, block::RenderableBlockResizable, line::RenderLineResizable,
-        text_buffer::TextBuffer,
+        text_buffer::TextBuffer, window::Window,
     },
 };
 use colored::Color;
 use std::ffi::OsStr;
 use std::fs;
+use termion::event::{Event, Key};
 
 pub enum Mode {
     Normal,
@@ -53,12 +54,25 @@ impl RenderableBlockResizable for TextEditor {
     }
 }
 
+impl Window for TextEditor {
+    fn recieve_event(&mut self, event: Event) {
+        match self.mode {
+            Mode::Insert => {
+                if event == Event::Key(Key::Esc) {
+                    self.mode = Mode::Normal;
+                };
+            }
+            _ => {}
+        }
+    }
+}
+
 impl TextEditor {
     pub fn new() -> Self {
         TextEditor {
             buffer: vec![],
             logical_cursor_position: Vector2::<usize> { x: 0, y: 0 },
-            mode: Mode::Normal,
+            mode: Mode::Insert,
         }
     }
     pub fn load_file(&mut self, path: &OsStr) {
