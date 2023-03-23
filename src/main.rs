@@ -12,7 +12,7 @@ use std::ffi::OsStr;
 
 fn main() {
     let mut editor = TextEditor::new();
-    editor.load_file(OsStr::new("./src/main.rs"));
+    editor.load_file(OsStr::new("./src/setsuna/core/vector2.rs"));
     editor
         .render(Vector2::<usize> { x: 80, y: 24 })
         .iter()
