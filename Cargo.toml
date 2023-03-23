@@ -8,4 +8,5 @@ edition = "2021"
 colored = "2.0.0"
 regex = "1.7.2"
 termion = "2.0.1"
+termsize = "0.1.6"
 

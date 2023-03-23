@@ -1,5 +1,6 @@
 pub use crate::setsuna::ui::line::{Pivot, RenderLine, RenderLineResizable};
 use colored::Color;
+use regex::Regex;
 
 #[derive(Clone)]
 pub enum Effect {
@@ -52,6 +53,9 @@ impl TextStyle {
         }
         reset
     }
+    pub fn apply(&self, i: String) -> String {
+        vec![self.get_begin(), i, self.get_end()].join("")
+    }
 }
 
 #[derive(Clone)]
@@ -73,12 +77,17 @@ impl Text {
     }
 }
 
-fn get_n_char_str(c: char, n: usize) -> String {
+pub fn get_n_char_str(c: char, n: usize) -> String {
     (0..n).map(|_| c).collect::<String>()
 }
 
-fn get_special_str(style: String) -> String {
+pub fn get_special_str(style: String) -> String {
     vec!["\x1b[".to_string(), style, "m".to_string()].join("")
+}
+
+pub fn remove_special(i: &String) -> String {
+    let re = Regex::new(r"\x1b\x5b(.*)m").unwrap();
+    re.replace_all(i, "").into()
 }
 
 impl RenderLineResizable for Text {

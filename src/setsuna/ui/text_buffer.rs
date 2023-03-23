@@ -1,11 +1,14 @@
 use crate::setsuna::core::vector2::Vector2;
 use crate::setsuna::ui::block::RenderableBlockResizable;
+use crate::setsuna::ui::text::remove_special;
+use crate::setsuna::ui::text::TextStyle;
 
 pub struct TextBuffer<'a> {
-    view_start_line: usize,
+    pub view_start_line: usize,
     pub show_line_number: bool,
     pub wrap: bool,
     pub buffer: &'a Vec<String>,
+    pub line_style: TextStyle,
 }
 
 impl TextBuffer<'_> {
@@ -15,6 +18,7 @@ impl TextBuffer<'_> {
             show_line_number: true,
             wrap: false,
             buffer: buffer,
+            line_style: TextStyle::default(),
         }
     }
 }

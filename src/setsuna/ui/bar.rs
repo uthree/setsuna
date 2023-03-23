@@ -1,4 +1,5 @@
 use crate::setsuna::ui::line::{Pivot, RenderLineResizable};
+use crate::setsuna::ui::text::remove_special;
 use crate::setsuna::ui::text::{Text, TextStyle};
 use regex::Regex;
 
@@ -12,11 +13,6 @@ pub struct Bar {
     pub style: TextStyle,
     pub left: String,
     pub right: String,
-}
-
-fn remove_special(i: &String) -> String {
-    let re = Regex::new(r"\x1b\x5b(.*)m").unwrap();
-    re.replace_all(i, "").into()
 }
 
 impl RenderLineResizable for Bar {
