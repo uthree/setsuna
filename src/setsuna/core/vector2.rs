@@ -5,8 +5,8 @@ pub struct Vector2<T>
 where
     T: Copy + Clone,
 {
-    x: T,
-    y: T,
+    pub x: T,
+    pub y: T,
 }
 
 impl<T> Vector2<T>

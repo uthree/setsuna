@@ -1,4 +1,4 @@
-use crate::setsuna::ui::line::RenderLineResizable;
+use crate::setsuna::ui::line::{Pivot, RenderLineResizable};
 use crate::setsuna::ui::text::{Text, TextStyle};
 use regex::Regex;
 
@@ -81,12 +81,34 @@ impl Bar {
         }
     }
 
-    pub fn from_bars(bars: Vec<Bar>) -> Self {
+    pub fn bars(bars: Vec<Bar>) -> Self {
         Bar {
             content: BarContent::Bars(bars),
             style: TextStyle::default(),
             left: "".to_string(),
             right: "".to_string(),
         }
+    }
+
+    pub fn set_pivot(&mut self, pivot: Pivot) {
+        match &mut self.content {
+            BarContent::Text(text) => text.pivot = pivot,
+            _ => {}
+        }
+    }
+
+    pub fn left(mut self) -> Self {
+        self.set_pivot(Pivot::Left);
+        self
+    }
+
+    pub fn center(mut self) -> Self {
+        self.set_pivot(Pivot::Center);
+        self
+    }
+
+    pub fn right(mut self) -> Self {
+        self.set_pivot(Pivot::Right);
+        self
     }
 }

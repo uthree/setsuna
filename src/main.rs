@@ -1,14 +1,20 @@
 pub mod setsuna;
 
+use crate::setsuna::core::vector2::Vector2;
+use crate::setsuna::editor::text_editor::TextEditor;
 use crate::setsuna::ui::bar::*;
-use crate::setsuna::ui::line::RenderLineResizable;
+use crate::setsuna::ui::block::RenderableBlockResizable;
+use crate::setsuna::ui::line::{Pivot, RenderLineResizable};
+use crate::setsuna::ui::text::Text;
 use colored::Color;
+use colored::Colorize;
+use std::ffi::OsStr;
 
 fn main() {
-    let mut b1 = Bar::label("* something1.rs");
-    let mut b2 = Bar::label("something2.rs");
-    let mut b3 = Bar::label("something3.rs");
-    let mut bs = Bar::from_bars(vec![b1, b2, b3]);
-
-    println!("{}", bs.render(40));
+    let mut editor = TextEditor::new();
+    editor.load_file(OsStr::new("./src/main.rs"));
+    editor
+        .render(Vector2::<usize> { x: 80, y: 24 })
+        .iter()
+        .for_each(|l| println!("{}", l))
 }
