@@ -21,6 +21,17 @@ fn remove_special(i: &String) -> String {
 
 impl RenderLineResizable for Bar {
     fn render(&self, size: usize) -> String {
+        let mut left = self.left.clone();
+        let mut right = self.right.clone();
+        match &self.content {
+            BarContent::Text(text) => {
+                if text.label.len() > size {
+                    left = "".to_string();
+                    right = "".to_string();
+                }
+            }
+            _ => {}
+        }
         match &self.content {
             BarContent::Text(text) => {
                 // Render text
@@ -28,11 +39,11 @@ impl RenderLineResizable for Bar {
                 let len_r = remove_special(&self.right).len();
 
                 vec![
-                    self.left.clone(),
+                    left,
                     self.style.get_begin(),
                     text.clone().render(size - len_l - len_r),
                     self.style.get_end(),
-                    self.right.clone(),
+                    right,
                 ]
                 .join("")
             }
@@ -44,7 +55,7 @@ impl RenderLineResizable for Bar {
                     .map(|i| (s + i) / bars.len())
                     .collect::<Vec<usize>>();
                 vec![
-                    self.left.clone(),
+                    left,
                     self.style.get_begin(),
                     bars.iter()
                         .zip(sizes)
@@ -52,7 +63,7 @@ impl RenderLineResizable for Bar {
                         .collect::<Vec<String>>()
                         .join(""),
                     self.style.get_end(),
-                    self.right.clone(),
+                    right,
                 ]
                 .join("")
             }
