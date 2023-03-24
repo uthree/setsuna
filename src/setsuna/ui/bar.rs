@@ -1,7 +1,7 @@
 use crate::setsuna::ui::line::{Pivot, RenderLineResizable};
 use crate::setsuna::ui::text::remove_special;
 use crate::setsuna::ui::text::{Text, TextStyle};
-use regex::Regex;
+use colored::Color;
 
 pub enum BarContent {
     Text(Text),
@@ -17,6 +17,9 @@ pub struct Bar {
 
 impl RenderLineResizable for Bar {
     fn render(&self, size: usize) -> String {
+        if size == 0 {
+            return "".to_string();
+        };
         let mut left = self.left.clone();
         let mut right = self.right.clone();
         match &self.content {
@@ -35,11 +38,14 @@ impl RenderLineResizable for Bar {
                 let len_r = remove_special(&self.right).len();
 
                 vec![
+                    "\x1b[0m".to_string(),
                     left,
                     self.style.get_begin(),
                     text.clone().render(size - len_l - len_r),
                     self.style.get_end(),
+                    "\x1b[0m".to_string(),
                     right,
+                    "\x1b[0m".to_string(),
                 ]
                 .join("")
             }
@@ -51,6 +57,7 @@ impl RenderLineResizable for Bar {
                     .map(|i| (s + i) / bars.len())
                     .collect::<Vec<usize>>();
                 vec![
+                    "\x1b[0m".to_string(),
                     left,
                     self.style.get_begin(),
                     bars.iter()
@@ -59,7 +66,9 @@ impl RenderLineResizable for Bar {
                         .collect::<Vec<String>>()
                         .join(""),
                     self.style.get_end(),
+                    "\x1b[0m".to_string(),
                     right,
+                    "\x1b[0m".to_string(),
                 ]
                 .join("")
             }
@@ -105,6 +114,31 @@ impl Bar {
 
     pub fn right(mut self) -> Self {
         self.set_pivot(Pivot::Right);
+        self
+    }
+
+    pub fn on_red(mut self) -> Self {
+        self.style.background_color = Some(Color::Red);
+        self
+    }
+    pub fn on_blue(mut self) -> Self {
+        self.style.background_color = Some(Color::Blue);
+        self
+    }
+    pub fn on_green(mut self) -> Self {
+        self.style.background_color = Some(Color::Green);
+        self
+    }
+    pub fn on_black(mut self) -> Self {
+        self.style.background_color = Some(Color::Black);
+        self
+    }
+    pub fn on_yellow(mut self) -> Self {
+        self.style.background_color = Some(Color::Yellow);
+        self
+    }
+    pub fn on_white(mut self) -> Self {
+        self.style.background_color = Some(Color::White);
         self
     }
 }

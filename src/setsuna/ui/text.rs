@@ -44,7 +44,7 @@ impl TextStyle {
         vec![begin_fg, begin_bg, begin_effect].join("")
     }
     pub fn get_end(&self) -> String {
-        let mut reset = "".to_string();
+        let mut reset = "\x1b[0m".to_string();
         if self.effect.is_none()
             && self.foreground_color.is_none()
             && self.background_color.is_none()
@@ -105,10 +105,10 @@ impl RenderLineResizable for Text {
         } else {
             "".to_string()
         };
-        let mut reset = get_special_str("0".to_string());
         let mut begin_bg = "".to_string();
         let mut begin_fg = "".to_string();
         let mut begin_effect = "".to_string();
+        let mut reset = get_special_str("0".to_string());
         let mut label = self.label.clone();
         if label.len() > size {
             label = self.label[0..1].to_string();
@@ -131,12 +131,20 @@ impl RenderLineResizable for Text {
                     .to_string(),
             );
         }
+        let mut reset = vec![
+            reset,
+            begin_bg.clone(),
+            begin_fg.clone(),
+            begin_effect.clone(),
+        ]
+        .join("");
         if self.style.effect.is_none()
             && self.style.foreground_color.is_none()
             && self.style.background_color.is_none()
         {
             reset = "".to_string();
         }
+
         match self.pivot {
             Pivot::Left => vec![
                 reset.clone(),
