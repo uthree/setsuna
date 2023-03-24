@@ -2,17 +2,18 @@ use crate::setsuna::core::vector2::Vector2;
 use crate::setsuna::ui::block::RenderableBlockResizable;
 use crate::setsuna::ui::text::remove_special;
 use crate::setsuna::ui::text::TextStyle;
+use ropey::Rope;
 
 pub struct TextBuffer<'a> {
     pub view_start_line: usize,
     pub show_line_number: bool,
     pub wrap: bool,
-    pub buffer: &'a Vec<String>,
+    pub buffer: &'a Rope,
     pub line_style: TextStyle,
 }
 
 impl TextBuffer<'_> {
-    pub fn from_buffer<'a>(buffer: &'a Vec<String>) -> TextBuffer<'a> {
+    pub fn from_buffer<'a>(buffer: &'a Rope) -> TextBuffer<'a> {
         TextBuffer {
             view_start_line: 0,
             show_line_number: true,
@@ -25,44 +26,30 @@ impl TextBuffer<'_> {
 
 impl RenderableBlockResizable for TextBuffer<'_> {
     fn render(&self, size: Vector2<usize>) -> Vec<String> {
-        let buffer_len = self.buffer.len();
+        let buffer_len = self.buffer.len_chars();
         let num_line_number_digits = (buffer_len + 1).to_string().len();
 
         let mut render_buff = Vec::<String>::new();
-        let mut line = self.view_start_line;
+        let mut now_line = self.view_start_line;
 
         while render_buff.len() < size.y {
             let mut line_buff = "".to_string();
-
-            // render line number
-            let mut number = "".to_string();
-            if self.show_line_number {
-                let spaces = (0..(num_line_number_digits + 1 - (line + 1).to_string().len()))
-                    .map(|_| ' ')
-                    .collect::<String>();
-                number = vec![spaces, (line + 1).to_string(), " ".to_string()].join("");
-                if line > self.buffer.len() - 2 {
-                    number = (0..(num_line_number_digits + 1))
-                        .map(|_| ' ')
-                        .collect::<String>();
+            let line = self.buffer.get_line(now_line);
+            match line {
+                Some(l) => {
+                    line_buff = l.to_string();
                 }
-            }
-            line_buff = number;
-
-            // render text
-            if self.buffer.len() > line + 1 {
-                line_buff = vec![line_buff, self.buffer[line].clone()].join("");
+                None => {}
             }
 
-            // fill space
-            while line_buff.len() < size.x {
-                line_buff = vec![line_buff, " ".to_string()].join("");
-            }
+            //fill space
+            //while line_buff.len() < size.x - 1 {
+            //    line_buff.push(' ');
+            //}
+            // remove overflow text
+            //line_buff = line_buff[..size.x].to_string();
+            now_line = now_line + 1;
 
-            // crop overflowed text
-            line_buff = line_buff[0..(size.x)].to_string();
-
-            line = line + 1;
             render_buff.push(line_buff);
         }
         render_buff

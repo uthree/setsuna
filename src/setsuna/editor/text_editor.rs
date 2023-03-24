@@ -6,8 +6,10 @@ use crate::setsuna::{
     },
 };
 use colored::Color;
+use ropey::Rope;
 use std::ffi::OsStr;
-use std::fs;
+use std::fs::File;
+use std::io::{BufReader, BufWriter};
 use termion::event::{Event, Key};
 
 pub enum Mode {
@@ -25,7 +27,7 @@ impl Mode {
 }
 
 pub struct TextEditor {
-    pub buffer: Vec<String>,
+    pub buffer: Rope,
     pub view_start_line: usize,
     pub cursor: Vector2<usize>,
     pub mode: Mode,
@@ -96,7 +98,7 @@ impl TextEditor {
         let mut line_style = TextStyle::default();
         line_style.foreground_color = Some(Color::Red);
         TextEditor {
-            buffer: vec![],
+            buffer: Rope::new(),
             cursor: Vector2::<usize> { x: 0, y: 0 },
             mode: Mode::Insert,
             view_start_line: 0,
@@ -104,10 +106,6 @@ impl TextEditor {
         }
     }
     pub fn load_file(&mut self, path: &OsStr) {
-        self.buffer = fs::read_to_string(path)
-            .unwrap()
-            .split('\n')
-            .map(|x| x.to_string())
-            .collect::<Vec<String>>();
+        self.buffer = Rope::from_reader(BufReader::new(File::open(path).unwrap())).unwrap();
     }
 }

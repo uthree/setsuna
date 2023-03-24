@@ -16,6 +16,20 @@ use termsize;
 
 fn main() {
     let (mut rows, mut cols) = (80, 24);
+    let mut editor = TextEditor::new();
+    let mut stdout = stdout();
+    write!(stdout, "{}", clear::All).unwrap();
+
+    editor.load_file(OsStr::new("some.txt"));
+    editor
+        .render(Vector2::<usize> { x: rows, y: cols })
+        .iter()
+        .for_each(|l| print!("{}", l));
+}
+
+/*
+fn main() {
+    let (mut rows, mut cols) = (80, 24);
     let stdin = stdin();
 
     let mut stdout = MouseTerminal::from(
@@ -27,7 +41,7 @@ fn main() {
     );
 
     let mut editor = TextEditor::new();
-    editor.load_file(OsStr::new("./src/main.rs"));
+    editor.load_file(OsStr::new("some.txt"));
     write!(stdout, "{}", clear::All).unwrap();
     write!(stdout, "{}", "\x1b[0m").unwrap();
     write!(stdout, "{}", cursor::Goto(1, 1)).unwrap();
@@ -59,3 +73,4 @@ fn main() {
         stdout.flush().unwrap();
     }
 }
+*/
