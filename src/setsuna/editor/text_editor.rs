@@ -7,6 +7,7 @@ use crate::setsuna::{
 };
 use colored::Color;
 use ropey::Rope;
+use std::ffi::OsStr;
 use std::ffi::OsString;
 use std::fs::File;
 use std::io;
@@ -34,6 +35,7 @@ pub struct TextEditor {
     pub number_style: TextStyle,
     pub mode: Mode,
     pub cursor: Vector2<usize>,
+    pub file_name: OsString,
 }
 
 impl TextEditor {
@@ -44,8 +46,9 @@ impl TextEditor {
             begin_of_render: 0,
             buffer: Rope::new(),
             number_style: s,
-            mode: Mode::Normal,
+            mode: Mode::Insert,
             cursor: Vector2 { x: 0, y: 0 },
+            file_name: OsString::from("untitled.txt"),
         }
     }
 
@@ -82,7 +85,7 @@ impl RenderBlockResizable for TextEditor {
                     let mut line_buff = self.number_style.apply(vec![d, " ".to_string()].join(""));
                     while col + num_digit_of_line_number + 1 < size.x {
                         // render line
-                        if col + num_digit_of_line_number < line.to_string().len() {
+                        if col + num_digit_of_line_number < line.to_string().len() + 1 {
                             line_buff.push(line.to_string().chars().nth(col).unwrap());
                         } else {
                             line_buff.push(' ');
@@ -101,7 +104,7 @@ impl RenderBlockResizable for TextEditor {
             .on_black()
             .left();
         let bar_right = Bar::label(" Unix | UTF-8 | Rust ").on_black().right();
-        let bar_center = Bar::label(" main.rs ").on_black();
+        let bar_center = Bar::label(&(self.file_name.clone().into_string().unwrap())).on_black();
 
         let status_bar = Bar::bars(vec![bar_left, bar_center, bar_right]);
 

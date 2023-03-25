@@ -47,6 +47,9 @@ pub trait Window {
                 rows = size.rows;
                 cols = size.cols;
             });
+            let event = event.unwrap();
+            //recieve event
+            self.recieve_event(event.clone());
             // clear screen
             write!(stdout, "{}", clear::All).unwrap();
             // move cursor
@@ -62,7 +65,7 @@ pub trait Window {
             });
             stdout.flush().unwrap();
 
-            if event.unwrap() == Event::Key(Key::Ctrl('z')) {
+            if event == Event::Key(Key::Ctrl('z')) {
                 return;
             }
         }
