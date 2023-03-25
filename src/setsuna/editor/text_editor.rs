@@ -11,11 +11,18 @@ use std::ffi::OsString;
 use std::fs::File;
 use std::io;
 use std::io::{BufReader, BufWriter};
+use termion::event::Event;
+
+pub enum Mode {
+    Normal,
+    Insert,
+}
 
 pub struct TextEditor {
     pub begin_of_render: usize,
     pub buffer: Rope,
     pub number_style: TextStyle,
+    pub mode: Mode,
 }
 
 impl TextEditor {
@@ -26,6 +33,7 @@ impl TextEditor {
             begin_of_render: 0,
             buffer: Rope::new(),
             number_style: s,
+            mode: Mode::Normal,
         }
     }
 
@@ -33,6 +41,10 @@ impl TextEditor {
         self.buffer = Rope::from_reader(BufReader::new(File::open(path)?))?;
         Ok(())
     }
+}
+
+impl Window for TextEditor {
+    fn recieve_event(&mut self, event: Event) {}
 }
 
 impl RenderBlockResizable for TextEditor {
@@ -66,9 +78,14 @@ impl RenderBlockResizable for TextEditor {
             row += 1;
         }
 
-        // render bar
-        let mut bar = Bar::label("STATUS BAR").on_black();
-        render_buff.push(bar.render(size.x));
+        // build status bar
+        let bar_left = Bar::label(" Insert ").on_black().left();
+        let bar_right = Bar::label(" Unix | UTF-8 | Rust ").on_black().right();
+        let bar_center = Bar::label(" main.rs ").on_black();
+
+        let status_bar = Bar::bars(vec![bar_left, bar_center, bar_right]);
+
+        render_buff.push(status_bar.render(size.x));
         return render_buff;
     }
 }
