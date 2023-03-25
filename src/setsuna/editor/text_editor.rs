@@ -11,11 +11,21 @@ use std::ffi::OsString;
 use std::fs::File;
 use std::io;
 use std::io::{BufReader, BufWriter};
-use termion::event::Event;
+use termion::event::{Event, Key};
 
+#[derive(PartialEq, Clone)]
 pub enum Mode {
     Normal,
     Insert,
+}
+
+impl Mode {
+    pub fn to_str(&self) -> &'static str {
+        match self {
+            Mode::Normal => "NORMAL",
+            Mode::Insert => "INSERT",
+        }
+    }
 }
 
 pub struct TextEditor {
@@ -23,6 +33,7 @@ pub struct TextEditor {
     pub buffer: Rope,
     pub number_style: TextStyle,
     pub mode: Mode,
+    pub cursor: Vector2<usize>,
 }
 
 impl TextEditor {
@@ -34,6 +45,7 @@ impl TextEditor {
             buffer: Rope::new(),
             number_style: s,
             mode: Mode::Normal,
+            cursor: Vector2 { x: 0, y: 0 },
         }
     }
 
@@ -44,7 +56,13 @@ impl TextEditor {
 }
 
 impl Window for TextEditor {
-    fn recieve_event(&mut self, event: Event) {}
+    fn recieve_event(&mut self, event: Event) {
+        if self.mode != Mode::Normal {
+            if event == Event::Key(Key::Esc) {
+                self.mode = Mode::Normal;
+            }
+        }
+    }
 }
 
 impl RenderBlockResizable for TextEditor {
@@ -79,7 +97,9 @@ impl RenderBlockResizable for TextEditor {
         }
 
         // build status bar
-        let bar_left = Bar::label(" Insert ").on_black().left();
+        let bar_left = Bar::label(&format!(" {} ", self.mode.to_str()))
+            .on_black()
+            .left();
         let bar_right = Bar::label(" Unix | UTF-8 | Rust ").on_black().right();
         let bar_center = Bar::label(" main.rs ").on_black();
 
