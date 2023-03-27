@@ -1,5 +1,6 @@
 use crate::setsuna::{
     core::vector2::Vector2,
+    editor::{command::Execute, key_binds::KeyBinds},
     ui::{
         bar::Bar, block::RenderBlockResizable, line::RenderLineResizable, text::TextStyle,
         window::Window,
@@ -23,8 +24,8 @@ pub enum Mode {
 impl Mode {
     pub fn to_str(&self) -> &'static str {
         match self {
-            Mode::Normal => "NORMAL",
-            Mode::Insert => "INSERT",
+            Mode::Normal => "Normal",
+            Mode::Insert => "Insert",
         }
     }
 }
@@ -36,6 +37,7 @@ pub struct TextEditor {
     pub mode: Mode,
     pub cursor: Vector2<usize>,
     pub file_name: OsString,
+    pub key_binds: KeyBinds,
 }
 
 impl TextEditor {
@@ -49,6 +51,7 @@ impl TextEditor {
             mode: Mode::Insert,
             cursor: Vector2 { x: 0, y: 0 },
             file_name: OsString::from("untitled.txt"),
+            key_binds: KeyBinds::default(),
         }
     }
 
@@ -61,8 +64,16 @@ impl TextEditor {
 impl Window for TextEditor {
     fn recieve_event(&mut self, event: Event) {
         if self.mode != Mode::Normal {
-            if event == Event::Key(Key::Esc) {
+            if event.clone() == Event::Key(Key::Esc) {
                 self.mode = Mode::Normal;
+            }
+        }
+        if self.mode == Mode::Normal {
+            // run keybinds
+            for (k, v) in self.key_binds.normal.iter() {
+                if event.clone() == *k {
+                    //v.execute(self);
+                }
             }
         }
     }
