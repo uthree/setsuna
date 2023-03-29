@@ -69,12 +69,11 @@ impl Window for TextEditor {
             }
         }
         if self.mode == Mode::Normal {
-            // run keybinds
-            for (k, v) in self.key_binds.normal.iter() {
-                if event.clone() == *k {
-                    //v.execute(self);
-                }
-            }
+            self.key_binds.normal.iter().for_each(|(k, v)| {
+                if event == k.clone() {
+                    v.clone().execute(self);
+                };
+            });
         }
     }
 }
