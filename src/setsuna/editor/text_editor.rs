@@ -1,6 +1,6 @@
 use crate::setsuna::{
     core::vector2::Vector2,
-    editor::{command::Execute, key_binds::KeyBinds},
+    editor::key_binds::KeyBinds,
     ui::{
         bar::Bar, block::RenderBlockResizable, line::RenderLineResizable, text::TextStyle,
         window::Window,
@@ -72,8 +72,8 @@ impl Window for TextEditor {
             self.key_binds.normal.iter().for_each(|(k, v)| {
                 if event == k.clone() {
                     v.clone().execute(self);
-                };
-            });
+                }
+            })
         }
     }
 }

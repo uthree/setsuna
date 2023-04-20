@@ -1,23 +1,17 @@
-use crate::setsuna::editor::{
-    command::{ChangeMode, Execute},
-    text_editor::Mode,
-};
+use crate::setsuna::editor::{command::Command, text_editor::Mode};
 use std::collections::HashMap;
 use termion::event::{Event, Key};
 
 pub struct KeyBinds {
-    pub normal: HashMap<Event, Box<dyn Execute>>,
-    pub insert: HashMap<Event, Box<dyn Execute>>,
+    pub normal: HashMap<Event, Command>,
+    pub insert: HashMap<Event, Command>,
 }
 
 impl Default for KeyBinds {
     fn default() -> Self {
-        let mut normal = HashMap::<Event, Box<dyn Execute>>::new();
-        let mut insert = HashMap::<Event, Box<dyn Execute>>::new();
-        insert.insert(
-            Event::Key(Key::Esc),
-            Box::new(ChangeMode::new(Mode::Normal)),
-        );
+        let mut normal = HashMap::<Event, Command>::new();
+        let mut insert = HashMap::<Event, Command>::new();
+        normal.insert(Event::Key(Key::Esc), Command::ChangeMode(Mode::Insert));
         KeyBinds { normal, insert }
     }
 }
