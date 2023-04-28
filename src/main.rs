@@ -1,13 +1,8 @@
-mod setsuna;
+mod core;
+mod ui;
 
-use crate::setsuna::{
-    core::vector2::Vector2,
-    editor::text_editor::TextEditor,
-    ui::{bar::Bar, block::RenderBlockResizable, window::Window},
-};
+use ui::bar::Bar;
+use ui::line::Line;
+use ui::text::Text;
 
-fn main() {
-    let mut editor = TextEditor::new();
-    editor.load_file("./src/main.rs".into());
-    editor.join();
-}
+fn main() {}

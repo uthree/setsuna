@@ -1,4 +1,4 @@
-use std::ops::{Add, Div, Mul, Sub};
+use std::ops::{Add, Sub};
 
 #[derive(Copy, Clone)]
 pub struct Vector2<T>

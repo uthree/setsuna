@@ -1,6 +1,20 @@
-pub use crate::setsuna::ui::line::{Pivot, RenderLine, RenderLineResizable};
+use crate::core::vector2::Vector2;
+use crate::ui::line::Line;
 use colored::Color;
 use regex::Regex;
+
+#[derive(Clone)]
+pub enum Pivot {
+    Left,
+    Right,
+    Center,
+}
+
+impl Default for Pivot {
+    fn default() -> Self {
+        Pivot::Center
+    }
+}
 
 #[derive(Clone)]
 pub enum Effect {
@@ -58,6 +72,14 @@ impl TextStyle {
     }
 }
 
+fn get_n_char_str(c: char, n: usize) -> String {
+    (0..n).map(|_| c).collect::<String>()
+}
+
+fn get_special_str(style: String) -> String {
+    vec!["\x1b[".to_string(), style, "m".to_string()].join("")
+}
+
 #[derive(Clone)]
 pub struct Text {
     pub label: String,
@@ -75,22 +97,24 @@ impl Text {
             padding_char: ' ',
         }
     }
+
+    pub fn left(mut self) -> Self {
+        self.pivot = Pivot::Left;
+        self
+    }
+
+    pub fn right(mut self) -> Self {
+        self.pivot = Pivot::Right;
+        self
+    }
+
+    pub fn center(mut self) -> Self {
+        self.pivot = Pivot::Center;
+        self
+    }
 }
 
-pub fn get_n_char_str(c: char, n: usize) -> String {
-    (0..n).map(|_| c).collect::<String>()
-}
-
-pub fn get_special_str(style: String) -> String {
-    vec!["\x1b[".to_string(), style, "m".to_string()].join("")
-}
-
-pub fn remove_special(i: &String) -> String {
-    let re = Regex::new(r"\x1b\x5b(.*)m").unwrap();
-    re.replace_all(i, "").into()
-}
-
-impl RenderLineResizable for Text {
+impl Line for Text {
     fn render(&self, size: usize) -> String {
         let pad_lr = size as isize - self.label.len() as isize;
         let pad_l = pad_lr / 2;
@@ -108,7 +132,7 @@ impl RenderLineResizable for Text {
         let mut begin_bg = "".to_string();
         let mut begin_fg = "".to_string();
         let mut begin_effect = "".to_string();
-        let mut reset = get_special_str("0".to_string());
+        let reset = get_special_str("0".to_string());
         let mut label = self.label.clone();
         if label.len() > size {
             label = self.label[0..1].to_string();
