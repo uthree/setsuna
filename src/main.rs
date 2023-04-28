@@ -1,4 +1,5 @@
 mod core;
+mod editor;
 mod ui;
 
 use ui::bar::Bar;
