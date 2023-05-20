@@ -1,31 +1,12 @@
 use crate::core::vector2::Vector2;
+use crate::ui::bar::Bar;
 use crate::ui::block::Block;
+use crate::ui::line::Line;
+use crate::ui::text::TextStyle;
 use ropey::Rope;
 use std::fs::File;
-use std::io::{BufReader, BufWriter};
+use std::io::BufReader;
 
-#[derive(Default, Debug, Clone)]
-struct EditorTab {
-    pub title: String,
-    buffer: ropey::Rope,
-}
+struct TextEditorTab {}
 
-impl EditorTab {
-    fn load_file(&mut self, path: String) -> Result<(), std::io::Error> {
-        self.buffer = Rope::from_reader(BufReader::new(File::open(path.clone())?))?;
-        self.title = path;
-        Ok(())
-    }
-}
-
-#[derive(Default, Debug, Clone)]
-struct TextEditor {
-    active_tab_id: usize,
-    tabs: Vec<EditorTab>,
-}
-
-impl Block for TextEditor {
-    fn render(&self, size: Vector2<usize>) -> Vec<String> {
-        vec![]
-    }
-}
+struct TextEditor {}

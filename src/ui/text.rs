@@ -16,7 +16,7 @@ impl Default for Pivot {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub enum Effect {
     Bold,
     Italic,
@@ -33,7 +33,7 @@ impl Effect {
     }
 }
 
-#[derive(Default, Clone)]
+#[derive(Default, Clone, Debug)]
 pub struct TextStyle {
     pub background_color: Option<Color>,
     pub foreground_color: Option<Color>,
