@@ -1,4 +1,4 @@
-use std::ops::{Add, Sub};
+use std::ops::{Add, Div, Mul, Sub};
 
 #[derive(Copy, Clone)]
 pub struct Vector2<T>
@@ -39,6 +39,28 @@ impl<T: Sub<Output = T> + Copy> Sub for Vector2<T> {
         Vector2 {
             x: self.x - other.x,
             y: self.y - other.y,
+        }
+    }
+}
+
+impl<T: Mul<Output = T> + Copy> Mul<T> for Vector2<T> {
+    type Output = Vector2<T>;
+
+    fn mul(self, scaler: T) -> Vector2<T> {
+        Vector2 {
+            x: self.x * scaler,
+            y: self.y * scaler,
+        }
+    }
+}
+
+impl<T: Div<Output = T> + Copy> Div<T> for Vector2<T> {
+    type Output = Vector2<T>;
+
+    fn div(self, scaler: T) -> Vector2<T> {
+        Vector2 {
+            x: self.x / scaler,
+            y: self.y / scaler,
         }
     }
 }
