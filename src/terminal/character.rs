@@ -1,4 +1,4 @@
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq)]
 pub enum Color {
     None,
     Black,
@@ -18,19 +18,24 @@ impl Default for Color {
     }
 }
 
-#[derive(Debug, Clone, Copy, Default)]
-pub struct Style {
+#[derive(Debug, Clone, Copy, Default, PartialEq)]
+pub struct Effect {
     bold: bool,
     italic: bool,
     underline: bool,
     strike_through: bool,
 }
 
+#[derive(Debug, Clone, Copy, Default, PartialEq)]
+pub struct Style {
+    pub effect: Effect,
+    pub bg_color: Color,
+    pub fg_color: Color,
+}
+
 #[derive(Debug, Clone, Copy)]
 pub struct Character {
     pub character: char,
-    pub fg_color: Color,
-    pub bg_color: Color,
     pub style: Style,
 }
 
@@ -38,15 +43,13 @@ impl From<char> for Character {
     fn from(c: char) -> Character {
         Character {
             character: c,
-            fg_color: Color::None,
-            bg_color: Color::None,
             style: Style::default(),
         }
     }
 }
 
-impl Character {
-    fn colorize_command(&self) -> String {
+impl Style {
+    pub fn colorize_command(&self) -> String {
         let fg = match self.fg_color {
             Color::None => "".to_string(),
             Color::Black => "\x1b\x5b30m".to_string(),
@@ -73,6 +76,20 @@ impl Character {
             Color::TrueColor { r, g, b } => format!("\x1b\x5b48;2;{};{};{}m", r, g, b),
         };
 
-        format!("{}{}", bg, fg)
+        let mut style = String::new();
+        if self.effect.bold {
+            style += "\x1b\x5b1m"
+        }
+        if self.effect.italic {
+            style += "\x1b\x5b3m"
+        }
+        if self.effect.underline {
+            style += "\x1b\x5b4m"
+        }
+        if self.effect.strike_through {
+            style += "\x1b\x5b9m"
+        }
+
+        format!("\x1b\x5b0m{}{}{}", style, bg, fg)
     }
 }
