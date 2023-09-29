@@ -33,7 +33,7 @@ pub struct Style {
     pub fg_color: Color,
 }
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq)]
 pub struct Character {
     pub character: char,
     pub style: Style,
